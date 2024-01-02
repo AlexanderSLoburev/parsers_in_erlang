@@ -20,8 +20,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: cd dir
-      run: cd ./reverse_polish_notation_evaluator
     - name: List files
       run: ls -al
     - name: Compile
@@ -29,4 +27,4 @@ jobs:
     #- name: Run tests
     #  run: rebar3 do eunit, ct
     - name: Run reverse_polish_notation_evaluator
-      run: erl -noshell -pa _build/default/lib/reverse_polish_notation_evaluator/ebin -s reverse_polish_notation_evaluator start -s init stop
+      run: erl -noshell -pa reverse_polish_notation_evaluator/reverse_polish_notation_evaluator_build/default/lib/reverse_polish_notation_evaluator/ebin -s reverse_polish_notation_evaluator start -s init stop
