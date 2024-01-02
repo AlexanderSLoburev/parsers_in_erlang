@@ -23,7 +23,7 @@ jobs:
     - name: List files
       run: ls -al
     - name: Compile
-      run: rebar3 compile -v
+      run: rebar3 compile -Dverbose=1
     #- name: Run tests
     #  run: rebar3 do eunit, ct
     - name: Run reverse_polish_notation_evaluator
