@@ -28,6 +28,6 @@ jobs:
       run: ls -al
     - name: List .beam files
       #run: ls -al ./reverse_polish_notation_evaluator/_build/default/lib/reverse_polish_notation_evaluator/ebin
-      run: ls -al ./reverse_polish_notation_evaluator
+      #run: ls -al ./reverse_polish_notation_evaluator
     - name: Run reverse_polish_notation_evaluator
       run: erl -noshell -pa reverse_polish_notation_evaluator/_build/default/lib/reverse_polish_notation_evaluator/ebin -s reverse_polish_notation_evaluator start -s init stop
