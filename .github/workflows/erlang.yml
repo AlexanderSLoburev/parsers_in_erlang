@@ -20,11 +20,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: List files
-      run: ls -al
     - name: Compile
       run: rebar3 compile
     #- name: Run tests
     #  run: rebar3 do eunit, ct
+    - name: List .beam files
+      run: ls -l reverse_polish_notation_evaluator/reverse_polish_notation_evaluator_build/default/lib/reverse_polish_notation_evaluator/ebin
     - name: Run reverse_polish_notation_evaluator
       run: erl -noshell -pa reverse_polish_notation_evaluator/reverse_polish_notation_evaluator_build/default/lib/reverse_polish_notation_evaluator/ebin -s reverse_polish_notation_evaluator start -s init stop
