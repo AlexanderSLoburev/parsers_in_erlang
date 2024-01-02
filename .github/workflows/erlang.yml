@@ -25,6 +25,6 @@ jobs:
     #- name: Run tests
     #  run: rebar3 do eunit, ct
     - name: List .beam files
-      run: ls -l ./reverse_polish_notation_evaluator/reverse_polish_notation_evaluator_build/default/lib/reverse_polish_notation_evaluator/ebin
+      run: ls -al ./reverse_polish_notation_evaluator/_build/default/lib/reverse_polish_notation_evaluator/ebin
     - name: Run reverse_polish_notation_evaluator
-      run: erl -noshell -pa reverse_polish_notation_evaluator/reverse_polish_notation_evaluator_build/default/lib/reverse_polish_notation_evaluator/ebin -s reverse_polish_notation_evaluator start -s init stop
+      run: erl -noshell -pa reverse_polish_notation_evaluator/_build/default/lib/reverse_polish_notation_evaluator/ebin -s reverse_polish_notation_evaluator start -s init stop
