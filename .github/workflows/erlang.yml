@@ -19,9 +19,9 @@ jobs:
       image: erlang:22.0.7
 
     steps:
-    - uses: actions/checkout@v3
+    #- uses: actions/checkout@v3
     - name: List files
-      run: ls -la
+      run: ls -al
     - name: Compile
       run: rebar3 compile -v
     #- name: Run tests
