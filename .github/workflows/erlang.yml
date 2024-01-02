@@ -20,10 +20,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: List files
-      run: ls -al
     - name: cd dir
       run: cd ./reverse_polish_notation_evaluator
+    - name: List files
+      run: ls -al
     - name: Compile
       run: rebar3 compile
     #- name: Run tests
