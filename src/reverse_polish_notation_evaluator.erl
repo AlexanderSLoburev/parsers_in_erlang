@@ -2,5 +2,4 @@
 -export([start/0]).
 
 start() ->
-   io:fwrite("Hello, world!~n"),
-   init:stop().
+   io:fwrite("Hello, world!~n").
