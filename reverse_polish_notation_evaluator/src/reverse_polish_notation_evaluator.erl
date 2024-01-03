@@ -50,17 +50,23 @@ handle_token({Token, Position}, Stack) ->
    end.
 
 
+'_tokenize'(_Expression, [], _Position, Acc) -> lists:reverse(Acc);
+
+'_tokenize'(Expression, Tokens, Position, Acc) ->
+   [FirstToken | RestTokens] = Tokens,
+   FirstPositionOfToken = string:str(Expression, FirstToken),
+   LengthOfToken = string:length(FirstToken),
+   SubstringStart = FirstPositionOfToken + LengthOfToken,
+   TrimmedExpression = string:slice(Expression, SubstringStart),
+   '_tokenize'(TrimmedExpression, RestTokens, Position + SubstringStart, [{FirstToken, Position + FirstPositionOfToken - 1} | Acc]).
+
 tokenize(Expression) ->
-   Tokens = re:split(Expression, "\\s+"),
-   StringTokens = lists:map(fun(Token) -> binary_to_list(Token) end, Tokens),
-   FilteredTokens = lists:filter(fun(X) -> (X =/= "") and not(lists:member(X, "\s\t\n")) end, StringTokens),
-   Positions = lists:flatmap(fun(Token) ->
-      case re:run(Expression, utils:re_escape(Token), [global]) of
-         nomatch -> [];
-         {match, Captured} -> lists:map(fun({Index, _Length}) -> {Token, Index + 1} end, lists:flatten(Captured))
-      end
-   end, FilteredTokens),
-   Positions.
+   Tokens = lists:filter(fun(X) -> (X =/= "") and not(lists:member(X, "\s\t\n")) end, 
+               lists:map(fun(Token) -> binary_to_list(Token) end, 
+                  re:split(Expression, "\\s+")
+               )
+            ),
+   '_tokenize'(Expression, Tokens, 1, []).
 
 
 '_evaluate_rpn'([], Stack) -> stack:peek(Stack);
@@ -74,4 +80,5 @@ evaluate_rpn(Expression) -> '_evaluate_rpn'(tokenize(Expression), []).
 
 
 start() ->
-   io:fwrite("~p~n", [evaluate_rpn("1 2 3 * + 4 -")]).
+   io:fwrite("~p~n", [evaluate_rpn("1 2 3 * + 4 -")]),
+   io:fwrite("~p~n", [evaluate_rpn(" 8 2 5 * + 1 3 2 * + 4 - / ")]).
