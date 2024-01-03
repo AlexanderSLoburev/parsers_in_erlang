@@ -4,3 +4,4 @@ erl_crash.dump
 reverse_polish_notation_evaluator.beam
 stack.beam
 reverse_polish_notation_evaluator.beam
+build/utils.beam
