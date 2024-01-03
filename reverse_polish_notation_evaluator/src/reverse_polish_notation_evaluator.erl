@@ -31,8 +31,18 @@ handle_token(Token, Stack, Position) ->
 
 
 tokenize(Expression) ->
-   Tokens = re:split(Expression, "(\\d+\\.?\\d*|[-+*/%//**])"),
-   lists:filter(fun(X) -> X =/= "" end, Tokens).
+   Tokens = re:split(Expression, "\\s+"),
+   FilteredTokens = lists:filter(fun(X) -> (X =/= "") and not(lists:member(X, "\s\t\n")) end, Tokens),
+   io:fwrite("~p~n", [FilteredTokens]),
+   Positions = lists:flatmap(fun(Token) ->
+      case re:run(Expression, utils:re_escape(Token), [global]) of
+         nomatch -> [];
+         {match, Captured} ->
+            io:fwrite("~p:~p~n", [utils:re_escape(Token), Captured]),
+            lists:map(fun({Index, _Length}) -> {Token, Index + 1} end, lists:flatten(Captured))
+      end
+   end, FilteredTokens),
+   Positions.
    
 
 
@@ -41,4 +51,4 @@ tokenize(Expression) ->
 
 
 start() ->
-   io:fwrite("~p~n", [tokenize(1 2 3 * + 4 -)]).
+   io:fwrite("~p~n", [tokenize("-11.4 2 3 / + * // ** % + 4 -")]).

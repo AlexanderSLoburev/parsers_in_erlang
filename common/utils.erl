@@ -10,16 +10,7 @@ try_parse_number(String) ->
 
 is_digit(Char) -> lists:member(Char, lists:seq($0, $9)).
 
-re_escape(Symbol) ->
-    case lists:member(Symbol, "[]\\^$.|?*+()") of
-        true ->
-            case is_integer(Symbol) of
-                true -> [$\ | [Symbol]];
-                false -> [$\ | Symbol]
-            end;
-        false ->
-            case is_integer(Symbol) of
-                true -> [Symbol];
-                false -> Symbol
-            end
-    end.
+re_escape(String) ->
+    io:fwrite("Token:~p, is binary: ~p~n", [String, is_binary(String)]),
+    Escaped = re:replace(String, "[\\[\\]\\\\^$.|?*+()]", "\\\\&", [global]),
+    Escaped.
