@@ -33,13 +33,10 @@ handle_token(Token, Stack, Position) ->
 tokenize(Expression) ->
    Tokens = re:split(Expression, "\\s+"),
    FilteredTokens = lists:filter(fun(X) -> (X =/= "") and not(lists:member(X, "\s\t\n")) end, Tokens),
-   io:fwrite("~p~n", [FilteredTokens]),
    Positions = lists:flatmap(fun(Token) ->
       case re:run(Expression, utils:re_escape(Token), [global]) of
          nomatch -> [];
-         {match, Captured} ->
-            io:fwrite("~p:~p~n", [utils:re_escape(Token), Captured]),
-            lists:map(fun({Index, _Length}) -> {Token, Index + 1} end, lists:flatten(Captured))
+         {match, Captured} -> lists:map(fun({Index, _Length}) -> {Token, Index + 1} end, lists:flatten(Captured))
       end
    end, FilteredTokens),
    Positions.
