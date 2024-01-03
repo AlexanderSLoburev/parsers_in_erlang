@@ -2,18 +2,43 @@
 -export([start/0]).
 
 
-% evaluate_rpn(expression) ->
+handle_token(Token, Stack, Position) ->
+   case utils:try_parse_number(Token) of
+      Value when is_number(Value) -> stack:push(Value, Stack);
+      _ ->
+         Right = stack:peek(Stack),
+         StackAfterFirstPop = stack:pop(Stack),
+         Left = stack:peek(StackAfterFirstPop),
+         StackAfterSecondPop = stack:pop(StackAfterFirstPop),
+         case Token of
+            "+" -> stack:push(Left + Right, StackAfterSecondPop);
+            "-" -> stack:push(Left - Right, StackAfterSecondPop);
+            "*" -> stack:push(Left * Right, StackAfterSecondPop);
+            "/" -> stack:push(Left / Right, StackAfterSecondPop);
+            "//" -> 
+               case is_integer(Left) and is_integer(Right) of
+                  true -> stack:push(Left div Right, StackAfterSecondPop);
+                  false -> throw({error, io_lib:format("Error at position ~w: both operands must be integers.", [Position])})
+               end;
+            "%" ->
+               case is_integer(Left) and is_integer(Right) of
+                  true -> stack:push(Left rem Right, StackAfterSecondPop);
+                  false -> throw({error, io_lib:format("Error at position ~w: both operands must be integers.", [Position])})
+               end;
+            "**" -> stack:push(math:pow(Left, Right), StackAfterSecondPop)
+         end
+   end.
+
+
+tokenize(Expression) ->
+   Tokens = re:split(Expression, "(\\d+\\.?\\d*|[-+*/%//**])"),
+   lists:filter(fun(X) -> X =/= "" end, Tokens).
+   
+
+
+%evaluate_rpn(Expression) ->
+
 
 
 start() ->
-   io:fwrite("Hello, world!~n"),
-   Stack = stack:new(),
-   stack:push(3, stack:push(2, stack:push(1, Stack))),
-   io:fwrite("~p~n", stack:peek(Stack)),
-   io:fwrite("~p~n", stack:pop(Stack)),
-   io:fwrite("~p~n", stack:peek(Stack)),
-   io:fwrite("~p~n", stack:pop(Stack)),
-   io:fwrite("~p~n", stack:peek(Stack)),
-   io:fwrite("~p~n", stack:pop(Stack)),
-   io:fwrite("~p~n", stack:peek(Stack)),
-   io:fwrite("~p~n", stack:is_empty(Stack)).
+   io:fwrite("~p~n", [tokenize(1 2 3 * + 4 -)]).
