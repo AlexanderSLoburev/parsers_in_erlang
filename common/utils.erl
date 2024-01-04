@@ -21,6 +21,13 @@ re_escape(String) ->
 identity(X) -> X.
 
 
+ternary(Condition, TrueResult, FalseResult) ->
+    case Condition of
+        true -> TrueResult;
+        false -> FalseResult
+    end.
+
+
 % '_tokenize'(_Expression, [], _Position, Acc) -> lists:reverse(Acc);
 
 % '_tokenize'(Expression, Tokens, Position, Acc) ->
@@ -43,13 +50,15 @@ identity(X) -> X.
 create_token(TokenString, StartPosition, EndPosition) ->
     TokenSpec = [
         {is_number, try_parse_number, number},
-        {fun(X) -> X =:= "+" end, identity, '+'},
-        {fun(X) -> X =:= "-" end, identity, '-'},
-        {fun(X) -> X =:= "*" end, identity, '*'},
-        {fun(X) -> X =:= "/" end, identity, '/'},
-        {fun(X) -> X =:= "//" end, identity, '//'},
-        {fun(X) -> X =:= "%" end, identity, '%'},
-        {fun(X) -> X =:= "**" end, identity, '**'}
+        {fun(X) -> X =:= "+" end, identity, add},
+        {fun(X) -> X =:= "-" end, identity, subtr},
+        {fun(X) -> X =:= "*" end, identity, mult},
+        {fun(X) -> X =:= "/" end, identity, 'div'},
+        {fun(X) -> X =:= "//" end, identity, int_div},
+        {fun(X) -> X =:= "%" end, identity, 'rem'},
+        {fun(X) -> X =:= "**" end, identity, exp},
+        {fun(X) -> X =:= "(" end, identity, left_paren},
+        {fun(X) -> X =:= ")" end, identity, right_paren}
     ],
     case lists:filtermap(fun({Predicate, Convert, Atom}) ->
         case Predicate(TokenString) of
@@ -70,12 +79,18 @@ flush_buffer(Buffer, Tokens, StartPosition, EndPosition) ->
 
 
 tokenize(Expression) ->
-    lists:foldr(fun(Char, Acc) ->
+    lists:foldl(fun(Char, Acc) ->
+        {Buffer, Tokens, StartPosition, EndPosition, SignAllowed} = Acc,
         case is_whitespace(Char) of
-            true -> 
-                {Buffer, Tokens, StartPosition, EndPosition} = Acc,
-                {flush_buffer(Buffer, Tokens, StartPosition, EndPosition), [], 0, Position + 1}
+            true ->
+                {[], flush_buffer(lists:reverse(Buffer), StartPosition, EndPosition), 0, Position + 1, false};
             false ->
-                case is_digit(Char) of
+                case is_digit(Char) or (Char =:= $.) of
+                    true -> {[Char | Buffer], Tokens, StartPosition, Position + 1, false};
+                    false -> {[], flush_buffer(lists:reverse(Buffer), 0, Position + 1, ternary(Char =:= $)), ))}
+                        
 
-    end, {[], [], 0, 0}, Expression).
+
+
+
+    end, {[], [], 0, 0, true}, Expression).
