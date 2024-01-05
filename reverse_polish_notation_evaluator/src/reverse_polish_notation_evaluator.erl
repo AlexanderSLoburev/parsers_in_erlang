@@ -71,7 +71,10 @@ handle_token({Token, Position}, Stack) ->
    '_evaluate_rpn'(RestTokens, handle_token(FirstToken, Stack)).
 
 
-evaluate_rpn(Expression) -> '_evaluate_rpn'(utils:tokenize(Expression), []).
+evaluate_rpn(Expression) -> 
+   Tokens = tokenizer:tokenize(Expression),
+   % io:fwrite("Tokens: ~p~n", [Tokens]),
+   '_evaluate_rpn'(Tokens, []).
 
 
 start() ->
