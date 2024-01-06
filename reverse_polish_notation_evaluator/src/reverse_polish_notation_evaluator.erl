@@ -2,7 +2,7 @@
 -export([start/0]).
 
 
-handle_token({Token, Position}, Stack) ->
+handle_token({_TokenType, Token, Position}, Stack) ->
    io:fwrite("Stack: ~p~n", [Stack]),
    case utils:try_parse_number(Token) of
       Value when is_number(Value) ->
@@ -73,7 +73,7 @@ handle_token({Token, Position}, Stack) ->
 
 evaluate_rpn(Expression) -> 
    Tokens = tokenizer:tokenize(Expression),
-   % io:fwrite("Tokens: ~p~n", [Tokens]),
+   io:fwrite("Tokens: ~p~n", [Tokens]),
    '_evaluate_rpn'(Tokens, []).
 
 
